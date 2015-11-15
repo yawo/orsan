@@ -11,5 +11,8 @@ class Person {
 
     static constraints = {
     }
+    def setId(){
+        id = new ObjectId()
+    }
+    static mapWith = "mongo"
 }
-    
