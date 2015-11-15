@@ -1,5 +1,6 @@
 # orsan
-Système social pour identifier victimes dans les hopitaux ou les décès après des incidents graves.
+Application sociale pour signaler, identifier et retrouver rapidement les victimes proches dans les hopitaux ou les décès après des incidents graves.
+
 L'idée part de la souffrance des parisiens à retrouver leurs proches après les terribles attentats du 13 Nov 2015.
 
 ![https://github.com/yawo/orsan/blob/master/orsan.png](https://github.com/yawo/orsan/blob/master/orsan.png)
