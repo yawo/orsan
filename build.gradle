@@ -9,6 +9,7 @@ buildscript {
     dependencies {        
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath 'com.bertramlabs.plugins:asset-pipeline-gradle:2.5.0'
+        classpath "org.grails.plugins:hibernate:4.3.10.5"
     }
 }
 
@@ -56,8 +57,10 @@ dependencies {
     compile "org.springframework.boot:spring-boot-starter-tomcat"
     compile "org.grails:grails-dependencies"
     compile "org.grails:grails-web-boot"
-    compile "org.grails.plugins:mongodb"
+
+    compile "org.grails.plugins:hibernate"
     compile "org.grails.plugins:cache"
+    compile "org.hibernate:hibernate-ehcache"
     compile "org.grails.plugins:scaffolding"
 
     runtime "org.grails.plugins:asset-pipeline"
