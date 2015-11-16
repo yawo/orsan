@@ -86,6 +86,10 @@ dataSource:
 
 environments:
     development:
+        neo4j:
+            url: "http://localhost:7474"
+            username: "neo4j"
+            password: "0rs@np@ssw0RD"
         dataSource:
             dbCreate: create-drop
             url: jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE

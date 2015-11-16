@@ -9,7 +9,6 @@ buildscript {
     dependencies {        
         classpath "org.grails:grails-gradle-plugin:$grailsVersion"
         classpath 'com.bertramlabs.plugins:asset-pipeline-gradle:2.5.0'
-        classpath "org.grails.plugins:hibernate:4.3.10.5"
     }
 }
 
@@ -41,6 +40,8 @@ assets {
 repositories {
     mavenLocal()
     maven { url "https://repo.grails.org/grails/core" }
+    maven { url "https://m2.neo4j.org" }
+    maven { url "https://repo.spring.io/libs-release" }
 }
 
 dependencyManagement {
@@ -50,6 +51,10 @@ dependencyManagement {
     applyMavenExclusions false
 }
 
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
 dependencies {
     compile "org.springframework.boot:spring-boot-starter-logging"
     compile "org.springframework.boot:spring-boot-starter-actuator"
@@ -58,11 +63,12 @@ dependencies {
     compile "org.grails:grails-dependencies"
     compile "org.grails:grails-web-boot"
 
-    compile "org.grails.plugins:hibernate"
-    compile "org.grails.plugins:cache"
-    compile "org.hibernate:hibernate-ehcache"
-    compile "org.grails.plugins:scaffolding"
+    compile("org.springframework.data:spring-data-neo4j:4.0.0.RELEASE")
+    compile "org.neo4j.app:neo4j-server:2.3.1"
+    compile "org.neo4j.app:neo4j-server:2.3.1:static-web"
 
+    compile "org.grails.plugins:cache"
+    compile "org.grails.plugins:scaffolding"
     runtime "org.grails.plugins:asset-pipeline"
 
     testCompile "org.grails:grails-plugin-testing"
