@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 
 
 @Configuration
-@EnableNeo4jRepositories(basePackages = "fr.orsan.repository")
+@EnableNeo4jRepositories(basePackages = "fr.orsan.repositories")
 @EnableTransactionManagement
 class OrsanConfiguration extends Neo4jConfiguration{
     @Autowired

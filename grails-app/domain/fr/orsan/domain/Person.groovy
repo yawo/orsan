@@ -27,7 +27,7 @@ class Person {
     List<String>    pictures
     List<String>    phones
     @DateString("yy-MM-dd")
-    Date            birthday
+    Date            birthDate
     String          nationality
 
 

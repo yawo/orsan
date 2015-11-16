@@ -1,17 +1,12 @@
 package fr.orsan.domain
 
-import fr.orsan.utils.SafetyStatus
+import fr.orsan.utils.domain.PositionRelationship
 import org.neo4j.ogm.annotation.*
-import org.neo4j.ogm.annotation.typeconversion.DateString
 
 @RelationshipEntity(type="PLAYED_IN")
-class IncidentPositionRelationship {
-    @GraphId                            Long relationshipId;
-    @StartNode                          Person person;
-    @EndNode                            Address address;
-    @DateString("yy-MM-dd HH:mm:ss")    Date at;
-    @Property                           SafetyStatus safetyStatus
-    @Property                           List<String> comments
+class IncidentPositionRelationship implements PositionRelationship {
+
+    @StartNode                          Incident incident;
     static constraints = {
     }
 }
