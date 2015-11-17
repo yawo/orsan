@@ -24,6 +24,8 @@ class Person {
     String          bio
     //Sensitive
     String          ssn
+
+    //TODO Images: https://bitbucket.org/sbuettner/grails-cloudinary
     List<String>    pictures
     List<String>    phones
     @DateString("yy-MM-dd")
