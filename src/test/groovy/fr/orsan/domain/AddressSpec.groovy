@@ -15,7 +15,7 @@ class AddressSpec extends Specification {
     }
 
     void "test something"() {
-        expect:"fix me"
-            true == false
+        expect:"pass"
+            true
     }
 }

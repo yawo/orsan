@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 public interface PersonRepository extends GraphRepository<Person> {
-    // MATCH (person:Person {name={0}}) RETURN person
-    Person findByName(String name);
-
+    // MATCH (person:Person {firstName={0}}) RETURN person
+    Person findByFirstName(String firstName);
+    Person findByLastName(String lastName);
 }

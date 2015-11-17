@@ -94,6 +94,10 @@ environments:
             dbCreate: create-drop
             url: jdbc:h2:mem:devDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
     test:
+        neo4j:
+            url: "http://localhost:7474"
+            username: "neo4j"
+            password: "0rs@np@ssw0RD"
         dataSource:
             dbCreate: update
             url: jdbc:h2:mem:testDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE
