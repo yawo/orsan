@@ -9,6 +9,8 @@ import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
 import org.neo4j.ogm.authentication.UsernamePasswordCredentials
 import org.neo4j.ogm.session.request.DefaultRequest
 import org.neo4j.ogm.session.request.Neo4jRequest
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.neo4j.template.Neo4jTemplate
 import org.springframework.stereotype.Component
@@ -22,6 +24,7 @@ import javax.annotation.PostConstruct
 public class OrsanIndexer {
     @Autowired
     GrailsApplication grailsApplication
+    static Logger logger = LoggerFactory.getLogger(OrsanIndexer.class)
 
     final CloseableHttpClient httpClient    = HttpClients.custom().setConnectionManager(new PoolingHttpClientConnectionManager()).build();
     Neo4jRequest<String> neo4jRequest       = null
@@ -59,6 +62,7 @@ public class OrsanIndexer {
                                           "lon" : "lon"
                                         }''')
         //Create spatial index config
+
         neo4jRequest.execute(indexUrl,'''{
                                           "name" : "geom",
                                           "config" : {
@@ -68,6 +72,7 @@ public class OrsanIndexer {
                                             "lon" : "lon"
                                           }
                                         }''')
+        logger.info("indexes createdIndex...")
     }
 
 
