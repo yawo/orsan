@@ -5,9 +5,12 @@ import fr.orsan.domain.Person
 import grails.core.GrailsApplication
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager
+import org.neo4j.ogm.authentication.UsernamePasswordCredentials
 import org.neo4j.ogm.session.request.DefaultRequest
 import org.neo4j.ogm.session.request.Neo4jRequest
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.neo4j.template.Neo4jTemplate
 import org.springframework.stereotype.Component
 
 import javax.annotation.PostConstruct
@@ -20,17 +23,27 @@ public class OrsanIndexer {
     @Autowired
     GrailsApplication grailsApplication
 
-    final CloseableHttpClient httpClient    = HttpClients.createDefault();
-    Neo4jRequest<String> neo4jRequest       = new DefaultRequest(httpClient);
-    String baseUrl                          = grailsApplication.config.getProperty('neo4j.url')
-    String indexUrl                         = baseUrl+"/db/data/index/node"
-    String nodeUrl                          = baseUrl+"/db/data/node"
-    String relationshipUrl                  = baseUrl+"/db/data/relationship"
-    String spatialBaseUrl                   = baseUrl+"/db/data/ext/SpatialPlugin/graphdb"
-    String personIndexName                  = 'person_fulltext'
+    final CloseableHttpClient httpClient    = HttpClients.custom().setConnectionManager(new PoolingHttpClientConnectionManager()).build();
+    Neo4jRequest<String> neo4jRequest       = null
+    String baseUrl                          = null; 
+    String indexUrl                         = null; 
+    String nodeUrl                          = null; 
+    String relationshipUrl                  = null; 
+    String spatialBaseUrl                   = null; 
+    String personIndexName                  = null;
 
     @PostConstruct
     def createIndexes(){
+
+        def credentials = new UsernamePasswordCredentials(grailsApplication.config.getProperty('neo4j.username'),grailsApplication.config.getProperty('neo4j.password'))
+        neo4jRequest                     = new DefaultRequest(httpClient,credentials);
+        baseUrl                          = grailsApplication.config.getProperty('neo4j.url')
+        indexUrl                         = baseUrl+"/db/data/index/node"
+        nodeUrl                          = baseUrl+"/db/data/node"
+        relationshipUrl                  = baseUrl+"/db/data/relationship"
+        spatialBaseUrl                   = baseUrl+"/db/data/ext/SpatialPlugin/graphdb"
+        personIndexName                  = 'person_fulltext'
+
         //Create personIndexName fulltext index config
         neo4jRequest.execute(indexUrl,"""{
                                           "name" : "${personIndexName}",
