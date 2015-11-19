@@ -6,6 +6,8 @@ import grails.transaction.Rollback
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.data.neo4j.template.Neo4jOperations
+import org.springframework.data.neo4j.template.Neo4jTemplate
 import spock.lang.Specification
 
 @Rollback
@@ -15,6 +17,9 @@ class PersonRepositorySpec extends Specification {
 
     @Autowired
     PersonRepository personRepository
+
+    @Autowired
+    Neo4jOperations neo4jTemplate
 
     def setup() {
         //personRepository = (PersonRepository)Holders.applicationContext.getBean("personRepository")
@@ -27,10 +32,10 @@ class PersonRepositorySpec extends Specification {
         given:
             Person person = new Person()
             person.setEmail('mcguy2008@gmail.com')
-            person = personRepository.save(person)
+            person = neo4jTemplate.save(person)
             Person found = personRepository.findOne(person.id)
             logger.info "person: ${found.id}, ${found.email}"
-            personRepository.delete(person)
+            //neo4jTemplate.delete(person)
 
         expect:
             found?.id != null //todo: check this form

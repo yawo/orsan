@@ -3,12 +3,11 @@
  */
 package fr.orsan.utils.config
 
-import fr.orsan.domain.Person
 import grails.config.Config
 import grails.core.GrailsApplication
 import org.neo4j.ogm.session.SessionFactory
-import org.neo4j.ogm.session.request.DefaultRequest
-import org.neo4j.ogm.session.request.Neo4jRequest
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Bean
@@ -24,6 +23,7 @@ class BaseOrsanConfiguration extends Neo4jConfiguration{
 
     @Autowired OrsanIndexer orsanIndexer
 
+    static Logger logger = LoggerFactory.getLogger(BaseOrsanConfiguration.class)
 
     @Bean
     public Neo4jServer neo4jServer() {
@@ -32,7 +32,6 @@ class BaseOrsanConfiguration extends Neo4jConfiguration{
     }
 
     @Bean
-    //@Scope(value=ConfigurableBeanFactory.SCOPE_SINGLETON, proxyMode = ScopedProxyMode.TARGET_CLASS)
     public SessionFactory getSessionFactory() {
         // with domain entity base package(s)
         new SessionFactory("fr.orsan.domain");
@@ -44,6 +43,7 @@ class BaseOrsanConfiguration extends Neo4jConfiguration{
             @Override
             public void onApplicationEvent(AfterSaveEvent event) {
                orsanIndexer.indexNode(event.getEntity())
+                logger.info("indexing on save "+event.getEntity().getClass())
             }
         };
     }

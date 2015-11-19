@@ -1,6 +1,7 @@
 package fr.orsan.utils.config
 
 import fr.orsan.domain.Address
+import fr.orsan.domain.Incident
 import fr.orsan.domain.Person
 import grails.core.GrailsApplication
 import org.apache.http.Header
@@ -48,6 +49,10 @@ public class OrsanIndexer {
     String relationshipUrl                  = null;
     String spatialBaseUrl                   = null;
     String personIndexName                  = null;
+    String incidentIndexName                = null;
+    String personIndexUrl                   = null;
+    String incidentIndexUrl                 = null;
+    String addressIndexUrl                  = null;
     UsernamePasswordCredentials credentials = null
 
     @PostConstruct
@@ -63,20 +68,14 @@ public class OrsanIndexer {
         relationshipUrl                                         = baseUrl+"/db/data/relationship"
         spatialBaseUrl                                          = baseUrl+"/db/data/ext/SpatialPlugin/graphdb"
         personIndexName                                         = 'person_fulltext'
+        incidentIndexName                                       = 'incident_fulltext'
+        personIndexUrl                                          = baseUrl+"/db/data/index/node/"+personIndexName
+        incidentIndexUrl                                        = baseUrl+"/db/data/index/node/"+incidentIndexName
+        addressIndexUrl                                         = baseUrl+"/db/data/index/node/geom"+
 
-       /*
-
-
-
-        */
         //Create layer
-        execute(spatialBaseUrl+"/addSimplePointLayer",'''{
-                                          "layer" : "geom",
-                                          "lat" : "lat",
-                                          "lon" : "lon"
-                                        }''')
+        execute(spatialBaseUrl+"/addSimplePointLayer",'{"layer":"geom","lat":"lat","lon":"lon"}')
         //Create spatial index config
-
         execute(indexUrl,'{"name":"geom","config":{"provider":"spatial","geometry_type":"point","lat":"lat","lon":"lon"}}')
         //Create personIndexName fulltext index config
         execute(indexUrl,"""{
@@ -86,20 +85,40 @@ public class OrsanIndexer {
                                             "provider" : "lucene"
                                           }
                                         }""")
-        logger.info("indexes createdIndex...")
-
+        //Create incidentIndexName fulltext index config
+        execute(indexUrl,"""{
+                                          "name" : "${incidentIndexName}",
+                                          "config" : {
+                                            "type" : "fulltext",
+                                            "provider" : "lucene"
+                                          }
+                                        }""")
+        logger.info("indexes created...")
     }
 
 
     def indexPerson(Person person){
-        execute(indexUrl,"""{
+        execute(personIndexUrl,"""{
                                           "value" : "${person.firstName}_${person.lastName}_${person.age}_${person.email}_${person.ssn}",
                                           "uri"   : "${nodeUrl}/${person.id},
                                           "key    : "firstName_lastName_age_email_ssn}"
                                         }""")
     }
+
+    def indexIncident(Incident incident){
+        execute(incidentIndexUrl,"""{
+                                          "value" : "${incident.name}",
+                                          "uri"   : "${nodeUrl}/${incident.id},
+                                          "key    : "firstName_lastName_age_email_ssn}"
+                                        }""")
+    }
+
     def indexAddress(Address address){
-        //Create layer
+        execute(addressIndexUrl,"""{
+                                          "value" : "${address.name}",
+                                          "uri"   : "${nodeUrl}/${address.id},
+                                          "key    : "firstName_lastName_age_email_ssn}"
+                                        }""")
         execute(spatialBaseUrl+"/addNodeToLayer","""{
                                           "layer" : "geom",
                                           "node" : "${nodeUrl}/${address.id}"
@@ -107,12 +126,18 @@ public class OrsanIndexer {
     }
 
     def indexNode(Object node){
-        //TODO: sort of pattern matching
-        if(node instanceof Person) {
-            indexPerson((Person)node)
-        }
-        if(node instanceof Address) {
-            indexAddress((Address)node)
+        switch (node?.getClass()){
+            case Person.class:
+                indexPerson((Person)node)
+                break
+            case Address.class:
+                indexAddress((Address)node)
+                break
+            case Incident.class:
+                indexIncident((Incident)node)
+                break
+            default:
+                true //do nothing
         }
     }
 
