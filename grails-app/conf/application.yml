@@ -89,6 +89,7 @@ environments:
     development:
         neo4j:
             url: "http://localhost:7474"
+            urlWithAuth: "http://neo4j:0rs%40np%40ssw0RD@localhost:7474"
             username: "neo4j"
             password: "0rs@np@ssw0RD"
         dataSource:
@@ -105,6 +106,7 @@ environments:
     test:
         neo4j:
             url: "http://localhost:7474"
+            urlWithAuth: "http://neo4j:0rs%40np%40ssw0RD@localhost:7474"
             username: "neo4j"
             password: "0rs@np@ssw0RD"
         dataSource:

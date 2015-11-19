@@ -8,8 +8,6 @@ class Address {
     Double lat
     Double lon
 
-
-
     static constraints = {
     }
 }
