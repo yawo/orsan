@@ -19,6 +19,7 @@ class Person {
     String          firstName
     String          lastName
     String          race
+    Integer         age
     String          eyes
     String          height
     String          bio

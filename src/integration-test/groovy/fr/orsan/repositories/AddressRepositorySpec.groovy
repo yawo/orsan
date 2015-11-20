@@ -1,5 +1,4 @@
 package fr.orsan.repositories
-
 import fr.orsan.domain.Address
 import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
@@ -7,7 +6,6 @@ import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.neo4j.template.Neo4jOperations
-import org.springframework.data.neo4j.template.Neo4jTemplate
 import spock.lang.Specification
 
 @Rollback
@@ -33,10 +31,12 @@ class AddressRepositorySpec extends Specification {
         london.setLat(51.5085300)
         london.setLon(-0.1257400)
         neo4jTemplate.save(london)
+
         Address insideParis = new Address()
         insideParis.setLat(48.8634100)
         insideParis.setLon(2.3400000)
         neo4jTemplate.save(insideParis)
+
         paris
     }
 
@@ -49,10 +49,10 @@ class AddressRepositorySpec extends Specification {
 
     void "test neo4j addressRepository"() {
         given:
-            List<Address> founds = addressRepository.findWithinRadiumKm(center.lat, center.lon, 10)
-            logger.info "n addresses around 10 km: ${founds.size()}"
+            List<Address> founds = addressRepository.findWithinRadiumKm(center.lat.toString(), center.lon.toString(), '100.0')
+            logger.info "n addresses around 100 km: ${founds.each {println it}}"
 
         expect:
-            !founds.empty
+            founds.size() > 0
     }
 }
