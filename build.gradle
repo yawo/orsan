@@ -92,6 +92,9 @@ dependencies {
     compile "org.springframework.social:spring-social-twitter:1.1.0.RELEASE"
     compile "org.springframework.social:spring-social-security:1.1.0.RC1"
     compile "org.springframework:spring-social-neo4j:0.0.1-SNAPSHOT"
+    compile "org.springframework.security:spring-security-web:4.0.3.RELEASE"
+    compile "org.springframework.security:spring-security-config:4.0.3.RELEASE"
+
 
     compile "org.grails.plugins:cache"
     compile "org.grails.plugins:scaffolding"
@@ -103,6 +106,13 @@ dependencies {
     testRuntime "org.seleniumhq.selenium:selenium-firefox-driver:2.46.0"
 
     console "org.grails:grails-console"
+}
+
+jar {
+    manifest {
+        attributes(
+                "Class-Path": configurations.compile.collect { it.getName() }.join(' '))
+    }
 }
 
 task wrapper(type: Wrapper) {

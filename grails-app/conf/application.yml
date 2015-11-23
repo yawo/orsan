@@ -1,5 +1,7 @@
 ---
 grails:
+    security:
+        salt: 5c0744940b5c369b
     profile: web
     codegen:
         defaultPackage: orsan
@@ -103,6 +105,12 @@ environments:
                     apiSecret: "-or_mvrQf4AjDvovIy6XMnPIUBo"
                     enhanceImageTag: true
                     staticImageSupport: false
+        facebook:
+            clientId: 281707958585235
+            clientSecret: 321c9a03128b568bda9f6f4abc79fe94
+        twitter:
+            consumerKey: 0
+            consumerSecret: 0
     test:
         neo4j:
             url: "http://localhost:7474"
@@ -120,6 +128,12 @@ environments:
                     apiSecret: "-or_mvrQf4AjDvovIy6XMnPIUBo"
                     enhanceImageTag: true
                     staticImageSupport: false
+        facebook:
+            clientId: 281707958585235
+            clientSecret: 321c9a03128b568bda9f6f4abc79fe94
+        twitter:
+            consumerKey: 0
+            consumerSecret: 0
     production:
         dataSource:
             dbCreate: update
