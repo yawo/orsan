@@ -14,6 +14,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.data.neo4j.config.Neo4jConfiguration
 import org.springframework.data.neo4j.event.AfterSaveEvent
+import org.springframework.data.neo4j.event.BeforeDeleteEvent
 import org.springframework.data.neo4j.server.Neo4jServer
 import org.springframework.data.neo4j.server.RemoteServer
 
@@ -35,6 +36,17 @@ class BaseOrsanConfiguration extends Neo4jConfiguration{
     public SessionFactory getSessionFactory() {
         // with domain entity base package(s)
         new SessionFactory("fr.orsan.domain");
+    }
+
+    @Bean
+    ApplicationListener<BeforeDeleteEvent> beforeDeleteEventApplicationListener() {
+        return new ApplicationListener<BeforeDeleteEvent>() {
+            @Override
+            public void onApplicationEvent(BeforeDeleteEvent event) {
+                orsanIndexer.unIndexNode(event.getEntity())
+                logger.info("un-indexing on delete "+event.getEntity().getClass())
+            }
+        };
     }
 
     @Bean

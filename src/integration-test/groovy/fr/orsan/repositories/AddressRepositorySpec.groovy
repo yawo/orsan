@@ -13,46 +13,47 @@ import spock.lang.Specification
 class AddressRepositorySpec extends Specification {
     static Logger logger = LoggerFactory.getLogger(AddressRepositorySpec.class)
 
-    @Autowired
-    AddressRepository addressRepository
+    @Autowired AddressRepository addressRepository
+    @Autowired Neo4jOperations neo4jTemplate
 
-    @Autowired
-    Neo4jOperations neo4jTemplate
-
-    Address center = null
+    Address center          = null
+    List<Address> addresses = null
     //to delete : MATCH (n:Address)    DETACH DELETE n
     def createAdresses(){
+        addresses = []
+
         Address paris = new Address()
         paris.setLat(48.8534100)
         paris.setLon(2.3488000)
         neo4jTemplate.save(paris)
+        addresses.add(paris)
 
         Address london = new Address()
         london.setLat(51.5085300)
         london.setLon(-0.1257400)
         neo4jTemplate.save(london)
+        addresses.add(london)
+
 
         Address insideParis = new Address()
         insideParis.setLat(48.8634100)
         insideParis.setLon(2.3400000)
         neo4jTemplate.save(insideParis)
+        addresses.add(insideParis)
 
         paris
     }
 
-    def setup() {
-        center = createAdresses()
-    }
+    def setup() { center = createAdresses()  }
 
-    def cleanup() {
-    }
+    def cleanup() { addresses.each { neo4jTemplate.delete(it) } }
 
     void "test neo4j addressRepository"() {
         given:
-            List<Address> founds = addressRepository.findWithinRadiumKm(center.lat.toString(), center.lon.toString(), '100.0')
+            Set<Address> founds = addressRepository.withinRadiumKm(center.lat, center.lon, 100.0)
             logger.info "n addresses around 100 km: ${founds.each {println it}}"
 
-        expect:
-            founds.size() > 0
+
+        expect: founds.size() > 0
     }
 }

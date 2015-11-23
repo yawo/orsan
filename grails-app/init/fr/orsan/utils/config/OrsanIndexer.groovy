@@ -7,7 +7,10 @@ import org.apache.commons.codec.binary.Base64
 import org.apache.http.Header
 import org.apache.http.HttpEntity
 import org.apache.http.client.methods.CloseableHttpResponse
+import org.apache.http.client.methods.HttpDelete
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase
 import org.apache.http.client.methods.HttpPost
+import org.apache.http.client.methods.HttpRequestBase
 import org.apache.http.entity.StringEntity
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
@@ -73,11 +76,11 @@ public class OrsanIndexer {
         addressIndexUrl                                         = baseUrl+"/db/data/index/node/geom"
 
         //Create layer
-        execute(spatialBaseUrl+"/addSimplePointLayer",'{"layer":"geom","lat":"lat","lon":"lon"}')
+        executePost(spatialBaseUrl+"/addSimplePointLayer",'{"layer":"geom","lat":"lat","lon":"lon"}')
         //Create spatial index config
-        execute(indexUrl,'{"name":"geom","config":{"provider":"spatial","geometry_type":"point","lat":"lat","lon":"lon"}}')
+        executePost(indexUrl,'{"name":"geom","config":{"provider":"spatial","geometry_type":"point","lat":"lat","lon":"lon"}}')
         //Create personIndexName fulltext index config
-        execute(indexUrl,"""{
+        executePost(indexUrl,"""{
                                           "name" : "${personIndexName}",
                                           "config" : {
                                             "type" : "fulltext",
@@ -85,7 +88,7 @@ public class OrsanIndexer {
                                           }
                                         }""")
         //Create incidentIndexName fulltext index config
-        execute(indexUrl,"""{
+        executePost(indexUrl,"""{
                                           "name" : "${incidentIndexName}",
                                           "config" : {
                                             "type" : "fulltext",
@@ -95,35 +98,39 @@ public class OrsanIndexer {
         logger.info("indexes created...")
     }
 
+    //UN-INDEXING NODE
+    def unIndexAddress(Address address){ executeDelete(addressIndexUrl+"/${address.id}") }
+    def unIndexPerson(Person person){ executeDelete(personIndexUrl+"/${person.id}") }
+    def unIndexIncident(Incident incident){ executeDelete(incidentIndexUrl+"/${incident.id}") }
 
+    //INDEXING NODE
+    def indexAddress(Address address){
+        executePost(addressIndexUrl,"""{
+                                          "value" : "${address.name}",
+                                          "uri"   : "${nodeUrl}/${address.id}",
+                                          "key"   : "name"
+                                        }""")
+        /*executePost(spatialBaseUrl+"/addNodeToLayer","""{
+                                          "layer" : "geom",
+                                          "node" : "${nodeUrl}/${address.id}"
+                                        }""")*/
+    }
     def indexPerson(Person person){
-        execute(personIndexUrl,"""{
+        executePost(personIndexUrl,"""{
                                           "value" : "${person.firstName}_${person.lastName}_${person.age}_${person.email}_${person.ssn}",
                                           "uri"   : "${nodeUrl}/${person.id},
                                           "key    : "firstName_lastName_age_email_ssn}"
                                         }""")
     }
-
     def indexIncident(Incident incident){
-        execute(incidentIndexUrl,"""{
+        executePost(incidentIndexUrl,"""{
                                           "value" : "${incident.name}",
                                           "uri"   : "${nodeUrl}/${incident.id},
                                           "key    : "firstName_lastName_age_email_ssn}"
                                         }""")
     }
 
-    def indexAddress(Address address){
-        execute(addressIndexUrl,"""{
-                                          "value" : "${address.name}",
-                                          "uri"   : "${nodeUrl}/${address.id}",
-                                          "key"   : "name"
-                                        }""")
-        /*execute(spatialBaseUrl+"/addNodeToLayer","""{
-                                          "layer" : "geom",
-                                          "node" : "${nodeUrl}/${address.id}"
-                                        }""")*/
-    }
-
+    //PATTERN MATCH INDEXING
     def indexNode(Object node){
         switch (node?.getClass()){
             case Person.class:
@@ -140,18 +147,40 @@ public class OrsanIndexer {
         }
     }
 
-    def execute(url,query){
+    //PATTERN MATCH UN-INDEXING
+    def unIndexNode(Object node){
+        switch (node?.getClass()){
+            case Person.class:
+                unIndexPerson((Person)node)
+                break
+            case Address.class:
+                unIndexAddress((Address)node)
+                break
+            case Incident.class:
+                unIndexIncident((Incident)node)
+                break
+            default:
+                true //do nothing
+        }
+    }
+
+    def executePost(url, query){
         HttpPost request = new HttpPost(url);
         HttpEntity entity = new StringEntity(query,"UTF-8");
+        request.setEntity(entity);
+        executeRequest(request)
+    }
+    def executeDelete(url) { executeRequest(new HttpDelete(url))}
+
+    def executeRequest(HttpRequestBase request) {
         request.setHeader(header);
         request.setHeader(acceptHeader);
         request.setHeader(authHeader);
         // http://tools.ietf.org/html/rfc7231#section-5.5.3
         request.setHeader(userAgentHeader);
-        request.setEntity(entity);
         CloseableHttpResponse response = httpClient.execute(request); //todo: do sth with response, for God sake .
         //JsonResponse jsonResponse = new JsonResponse(response);
-        logger.info("${url}:: response status code = ${response.getStatusLine().getStatusCode()} #####################")
+        //logger.info("${url}:: response status code = ${response.getStatusLine().getStatusCode()} #####################")
         response.close()
     }
 }
