@@ -6,7 +6,4 @@ package fr.orsan.config
 
 import org.springframework.security.web.context.*;
 
-class SecurityWebApplicationInitializer
-        extends AbstractSecurityWebApplicationInitializer {
-
-}
+class SecurityWebApplicationInitializer  extends AbstractSecurityWebApplicationInitializer {}
