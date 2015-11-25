@@ -7,9 +7,10 @@ import org.neo4j.ogm.annotation.Relationship
 import org.neo4j.ogm.annotation.typeconversion.DateString
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.social.security.SocialUserDetails
 
 @NodeEntity
-class Person extends GrailsUser {
+class Person implements UserDetails, SocialUserDetails {
     private static final long serialVersionUID = 1
 
     transient springSecurityService
@@ -60,6 +61,7 @@ class Person extends GrailsUser {
     //UserDetails Security
     String password
     String username
+    String userId
     Boolean accountNonExpired = Boolean.TRUE
     Boolean accountNonLocked = Boolean.TRUE
     Boolean credentialsNonExpired = Boolean.FALSE

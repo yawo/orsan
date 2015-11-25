@@ -7,8 +7,16 @@ appender('STDOUT', ConsoleAppender) {
         pattern = "%level %logger - %msg%n"
     }
 }
+appender('FILE_STDOUT', FileAppender) {
+    file = "console.log"
+    append = true
+    encoder(PatternLayoutEncoder) {
+        pattern = "%level %logger - %msg%n"
+    }
+}
 
-root(INFO, ['STDOUT'])
+
+root(INFO, ['STDOUT','FILE_STDOUT'])
 
 def targetDir = BuildSettings.TARGET_DIR
 if (Environment.isDevelopmentMode() && targetDir) {

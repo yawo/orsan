@@ -2,7 +2,7 @@
  * Created by yawo on 16/11/15.
  */
 package fr.orsan.utils.config
-
+import fr.orsan.domain.Person
 import grails.config.Config
 import grails.core.GrailsApplication
 import org.neo4j.ogm.session.SessionFactory
@@ -12,11 +12,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.ApplicationListener
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.dao.DataAccessException
 import org.springframework.data.neo4j.config.Neo4jConfiguration
 import org.springframework.data.neo4j.event.AfterSaveEvent
 import org.springframework.data.neo4j.event.BeforeDeleteEvent
 import org.springframework.data.neo4j.server.Neo4jServer
 import org.springframework.data.neo4j.server.RemoteServer
+import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.social.security.SocialUserDetails
+import org.springframework.social.security.SocialUserDetailsService
 
 @Configuration
 class BaseOrsanConfiguration extends Neo4jConfiguration{
@@ -35,7 +41,7 @@ class BaseOrsanConfiguration extends Neo4jConfiguration{
     @Bean
     public SessionFactory getSessionFactory() {
         // with domain entity base package(s)
-        new SessionFactory("fr.orsan.domain");
+        new SessionFactory("fr.orsan.domain","org.springframework.social.connect.neo4j.domain");
     }
 
     @Bean
@@ -58,5 +64,25 @@ class BaseOrsanConfiguration extends Neo4jConfiguration{
                 logger.info("indexing on save "+event.getEntity().getClass())
             }
         };
+    }
+
+    @Bean
+    UserDetailsService getUserDetailsService(){
+        return new UserDetailsService() {
+            @Override
+            UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+                neo4jTemplate().queryForObject(Person.class,"MATCH (person:Person {username=${username}}) RETURN person",Collections.emptyMap())
+            }
+        }
+    }
+
+    @Bean
+    SocialUserDetailsService getSocialUserDetailsService(){
+        return new SocialUserDetailsService() {
+            @Override
+            SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException,DataAccessException {
+                neo4jTemplate().queryForObject(Person.class,"MATCH (person:Person {username=${username}}) RETURN person",Collections.emptyMap())
+            }
+        }
     }
 }

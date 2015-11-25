@@ -5,6 +5,7 @@ package fr.orsan.test.config
 import fr.orsan.utils.config.BaseOrsanConfiguration
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.core.annotation.Order
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories
 import org.springframework.transaction.annotation.EnableTransactionManagement
 
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 @EnableNeo4jRepositories(basePackages = "fr.orsan.repositories")
 @EnableTransactionManagement
 @Profile("test")
+@Order(1)
 class TestOrsanConfiguration extends BaseOrsanConfiguration{
 
 }

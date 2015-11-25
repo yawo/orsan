@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.context.annotation.Scope
 import org.springframework.context.annotation.ScopedProxyMode
+import org.springframework.core.annotation.Order
 import org.springframework.data.neo4j.repository.config.EnableNeo4jRepositories
 import org.springframework.transaction.annotation.EnableTransactionManagement
 
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement
 @EnableNeo4jRepositories(basePackages = "fr.orsan.repositories")
 @EnableTransactionManagement
 @Profile(["dev","production"])
+@Order(1)
 class OrsanConfiguration extends BaseOrsanConfiguration{
 
     // needed for session in view in web-applications

@@ -10,3 +10,6 @@ build/
 .settings
 .classpath
 out
+console.log
+null/
+.asscache

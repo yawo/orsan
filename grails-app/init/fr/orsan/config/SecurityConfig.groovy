@@ -1,12 +1,13 @@
 package fr.orsan.config
-
-import fr.orsan.utils.config.OrsanUserDetailsService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.annotation.Order
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.core.userdetails.UserDetailsService
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.social.security.SpringSocialConfigurer
 
 /**
@@ -14,18 +15,20 @@ import org.springframework.social.security.SpringSocialConfigurer
  */
 @Configuration
 @EnableWebSecurity
-@EnableGlobalMethodSecurity(securedEnabled = true)
-public class SecurityConfig {
+@Order(3)
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired OrsanUserDetailsService userDetailsService
+    @Autowired UserDetailsService userDetailsService
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userDetailsService)
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(new BCryptPasswordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        println("************* CONF *************")
         http
             .formLogin()
             .loginPage("/signin")
@@ -38,10 +41,12 @@ public class SecurityConfig {
             .and()
             .authorizeRequests()
             .antMatchers("/resources/**", "/favicon.ico").permitAll()
-            .antMatchers("/**").authenticated()
+            .antMatchers("/", "/favicon.ico","/auth/**","/signin/**").permitAll()
+            .antMatchers("/**").permitAll()
             .and()
             .rememberMe()
             .and()
             .apply(new SpringSocialConfigurer());
     }
+
 }

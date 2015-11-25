@@ -11,4 +11,5 @@ public interface PersonRepository extends GraphRepository<Person> {
     Person findByFirstName(String firstName)
     Person findByLastName(String lastName)
     Person findByUsername(String username)
+    Person findByUserId(String userId)
 }
