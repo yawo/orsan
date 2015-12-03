@@ -1,4 +1,5 @@
 # orsan
+![https://github.com/yawo/orsan/blob/master/orsan.png](https://github.com/yawo/orsan/blob/master/orsan.png)
 Application sociale pour
 * s'assurer de la sécurité des proches, 
 * signaler des disparutions, 
@@ -7,8 +8,6 @@ Application sociale pour
 
 L'idée part de la souffrance des parisiens à déterminer la situation de leurs proches après les terribles attentats du 13 Nov 2015.
 Le nom de l'application est inspiré du fameux plan blanc (partie du plan orsan français).
-
-![https://github.com/yawo/orsan/blob/master/orsan.png](https://github.com/yawo/orsan/blob/master/orsan.png)
 
 ## Qu'est ce le plan Orsan ?
 https://fr.wikipedia.org/wiki/Plan_Orsan
