@@ -1,7 +1,12 @@
 # orsan
-Application sociale pour signaler, identifier et retrouver rapidement les victimes proches dans les hopitaux ou les décès après des incidents graves.
+Application sociale pour
+* s'assurer de la sécurité des proches, 
+* signaler des disparutions, 
+* identifier rapidement des victimes dans les hopitaux  
+* reporter des décès après des incidents graves.
 
-L'idée part de la souffrance des parisiens à retrouver leurs proches après les terribles attentats du 13 Nov 2015.
+L'idée part de la souffrance des parisiens à déterminer la situation de leurs proches après les terribles attentats du 13 Nov 2015.
+Le nom de l'application est inspiré du fameux plan blanc (partie du plan orsan français).
 
 ![https://github.com/yawo/orsan/blob/master/orsan.png](https://github.com/yawo/orsan/blob/master/orsan.png)
 
