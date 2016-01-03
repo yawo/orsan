@@ -1,11 +1,10 @@
 package fr.orsan.domain
-
 import fr.orsan.utils.OrsanRole
 import fr.orsan.utils.PrivacyStatus
+import org.neo4j.ogm.annotation.GraphId
 import org.neo4j.ogm.annotation.NodeEntity
 import org.neo4j.ogm.annotation.Relationship
 import org.neo4j.ogm.annotation.typeconversion.DateString
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.social.security.SocialUserDetails
 
@@ -14,9 +13,10 @@ class Person implements UserDetails, SocialUserDetails {
     private static final long serialVersionUID = 1
 
     transient springSecurityService
-    //System id
-    Long id
-    String email
+    @GraphId
+    Long id //system id
+
+    String userId //(email or screenName if providerId is twitter.)
 
     //Privacy
     PrivacyStatus   privacyStatus
@@ -27,18 +27,20 @@ class Person implements UserDetails, SocialUserDetails {
     String          lastName
     String          race
     Integer         age
-    String          eyes
+    String          gender
     String          height
+    String          providerId
     String          bio
     //Sensitive
     String          ssn
 
     //TODO Images: https://bitbucket.org/sbuettner/grails-cloudinary
-    List<String>    pictures
+    List<String>    pictureUrls
+    String          profileImageUrl
     List<String>    phones
     @DateString("yy-MM-dd")
     Date            birthDate
-    String          nationality
+    String          hometown
 
 
     //Addresses
@@ -60,12 +62,10 @@ class Person implements UserDetails, SocialUserDetails {
 
     //UserDetails Security
     String password
-    String username
-    String userId
-    Boolean accountNonExpired = Boolean.TRUE
-    Boolean accountNonLocked = Boolean.TRUE
-    Boolean credentialsNonExpired = Boolean.FALSE
-    Boolean enabled = Boolean.TRUE
+    boolean accountNonExpired = true
+    boolean accountNonLocked = true
+    boolean credentialsNonExpired = true
+    boolean enabled = true
     List<OrsanRole> authorities
 
 
@@ -79,48 +79,19 @@ class Person implements UserDetails, SocialUserDetails {
         if (o == null || getClass() != o.getClass()) return false;
 
         Person person = (Person) o;
-        if (nodeId == null) return super.equals(o);
-        return nodeId.equals(person.nodeId);
+        if (id == null) return super.equals(o);
+        return id.equals(person.id);
 
     }
 
     @Override
     public int hashCode() {
-        return nodeId != null ? nodeId.hashCode() : super.hashCode();
-    }
-
-    @Override
-    Collection<? extends GrantedAuthority> getAuthorities() {
-        return null
-    }
-
-    @Override
-    String getPassword() {
-        return null
+        return id != null ? id.hashCode() : super.hashCode();
     }
 
     @Override
     String getUsername() {
-        return null
+        return userId
     }
 
-    @Override
-    boolean isAccountNonExpired() {
-        return false
-    }
-
-    @Override
-    boolean isAccountNonLocked() {
-        return false
-    }
-
-    @Override
-    boolean isCredentialsNonExpired() {
-        return false
-    }
-
-    @Override
-    boolean isEnabled() {
-        return false
-    }
 }

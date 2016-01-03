@@ -17,11 +17,17 @@ class OrsanNeo4jUsersConnectionRepository  implements UsersConnectionRepository{
     private ConnectionSignUp connectionSignUp;
     private TextEncryptor textEncryptor;
 
-    public OrsanNeo4jUsersConnectionRepository(Session session, ConnectionFactoryLocator connectionFactoryLocator, TextEncryptor textEncryptor) {
+//    public OrsanNeo4jUsersConnectionRepository(Session session, ConnectionFactoryLocator connectionFactoryLocator, TextEncryptor textEncryptor) {
+//        this(session,connectionFactoryLocator,textEncryptor,null)
+//    }
+
+    public OrsanNeo4jUsersConnectionRepository(Session session, ConnectionFactoryLocator connectionFactoryLocator, TextEncryptor textEncryptor, ConnectionSignUp connectionSignUp) {
         this.connectionFactoryLocator = connectionFactoryLocator;
         this.textEncryptor = textEncryptor;
         this.repository = new OgmUserConnectionRepositoryImpl(session);
+        this.connectionSignUp = connectionSignUp;
     }
+
 
     public void setConnectionSignUp(ConnectionSignUp connectionSignUp) {
         this.connectionSignUp = connectionSignUp;

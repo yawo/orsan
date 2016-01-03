@@ -1,4 +1,6 @@
 package fr.orsan.config
+
+import fr.orsan.utils.config.OrsanConnectionSignup
 import fr.orsan.utils.config.OrsanNeo4jUsersConnectionRepository
 import grails.core.GrailsApplication
 import org.neo4j.ogm.session.Session
@@ -23,6 +25,7 @@ import org.springframework.social.connect.web.ConnectController
 import org.springframework.social.connect.web.ReconnectFilter
 import org.springframework.social.facebook.api.Facebook
 import org.springframework.social.facebook.connect.FacebookConnectionFactory
+import org.springframework.social.google.connect.GoogleConnectionFactory
 import org.springframework.social.security.AuthenticationNameUserIdSource
 import org.springframework.social.twitter.connect.TwitterConnectionFactory
 /**
@@ -34,24 +37,36 @@ import org.springframework.social.twitter.connect.TwitterConnectionFactory
 class SocialConfig implements SocialConfigurer {
     @Autowired Neo4jServer neo4jServer
     @Autowired Session session
+    @Autowired OrsanConnectionSignup orsanConnectionSignup
     @Autowired GrailsApplication grailsApplication
 
 
     @Override
     public void addConnectionFactories(ConnectionFactoryConfigurer cfConfig, Environment env) {
-        cfConfig.addConnectionFactory(new FacebookConnectionFactory(
+
+        def facebookFactory = new FacebookConnectionFactory(
                 env.getProperty("facebook.clientId"),
-                env.getProperty("facebook.clientSecret")));
-        cfConfig.addConnectionFactory(new TwitterConnectionFactory(
+                env.getProperty("facebook.clientSecret"))
+        facebookFactory.setScope(env.getProperty("facebook.scope"))
+        cfConfig.addConnectionFactory(facebookFactory);
+
+        def twitterFactory = new TwitterConnectionFactory(
                 env.getProperty("twitter.consumerKey"),
-                env.getProperty("twitter.consumerSecret")));
+                env.getProperty("twitter.consumerSecret"))
+        cfConfig.addConnectionFactory(twitterFactory);
+
+        def googleFactory = new GoogleConnectionFactory(
+                env.getProperty("google.consumerKey"),
+                env.getProperty("google.consumerSecret"))
+        googleFactory.setScope(env.getProperty("google.scope"))
+        cfConfig.addConnectionFactory(googleFactory);
     }
 
 
     @Override
     public UsersConnectionRepository getUsersConnectionRepository(ConnectionFactoryLocator connectionFactoryLocator) {
         return new OrsanNeo4jUsersConnectionRepository(session, connectionFactoryLocator,
-                Encryptors.queryableText("password",grailsApplication.config.getProperty("grails.security.salt")))
+                Encryptors.noOpText(),orsanConnectionSignup)
 
     }
 

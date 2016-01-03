@@ -8,6 +8,13 @@ class Address {
     Double lat
     Double lon
 
+    Address(Long id, String name, Double lat, Double lon) {
+        this.id = id
+        this.name = name
+        this.lat = lat
+        this.lon = lon
+    }
+
     static constraints = {
     }
 }

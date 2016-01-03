@@ -88,8 +88,10 @@ dependencies {
     runtime "org.neo4j.app:neo4j-server:2.3.1"
     compile "org.neo4j.app:neo4j-server:2.3.1:static-web"
     compile "org.grails.plugins:grails-cloudinary:0.3"
-    compile "org.springframework.social:spring-social-facebook:2.0.2.RELEASE"
+    compile 'org.grails:grails-datastore-rest-client:5.0.0.RC3'
+    compile "org.springframework.social:spring-social-facebook:2.0.3.RELEASE"
     compile "org.springframework.social:spring-social-twitter:1.1.2.RELEASE"
+    compile "org.springframework.social:spring-social-google:1.0.0.RELEASE"
     compile "org.springframework.social:spring-social-security:1.1.4.RELEASE"
     compile "org.springframework.social:spring-social-core:1.1.4.RELEASE"
     compile "org.springframework.social:spring-social-web:1.1.4.RELEASE"

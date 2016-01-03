@@ -1,4 +1,5 @@
 package fr.orsan.repositories
+
 import fr.orsan.domain.Person
 import grails.test.mixin.integration.Integration
 import grails.transaction.Rollback
@@ -20,7 +21,7 @@ class PersonRepositorySpec extends Specification {
 
     def setup() {
         person = new Person()
-        person.setEmail('mcguy2008@gmail.com')
+        person.setUserId('mcguy2008@gmail.com')
         person = neo4jTemplate.save(person)
         person
     }
@@ -30,7 +31,7 @@ class PersonRepositorySpec extends Specification {
     void "test neo4j personRepository"() {
         given:
             Person found = personRepository.findOne(person.id)
-            logger.info "person: ${found.id}, ${found.email}"
+            logger.info "person: ${found.userId}"
 
         expect:  found?.id != null //todo: check this form
     }

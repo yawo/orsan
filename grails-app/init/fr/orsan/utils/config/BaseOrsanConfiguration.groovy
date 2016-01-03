@@ -71,7 +71,7 @@ class BaseOrsanConfiguration extends Neo4jConfiguration{
         return new UserDetailsService() {
             @Override
             UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-                neo4jTemplate().queryForObject(Person.class,"MATCH (person:Person {username=${username}}) RETURN person",Collections.emptyMap())
+                neo4jTemplate().queryForObject(Person.class,"MATCH (person:Person {userId:'${username}'}) RETURN person",Collections.emptyMap())
             }
         }
     }
@@ -81,7 +81,7 @@ class BaseOrsanConfiguration extends Neo4jConfiguration{
         return new SocialUserDetailsService() {
             @Override
             SocialUserDetails loadUserByUserId(String userId) throws UsernameNotFoundException,DataAccessException {
-                neo4jTemplate().queryForObject(Person.class,"MATCH (person:Person {username=${username}}) RETURN person",Collections.emptyMap())
+                neo4jTemplate().queryForObject(Person.class,"MATCH (person:Person {userId:'${userId}'}) RETURN person",Collections.emptyMap())
             }
         }
     }

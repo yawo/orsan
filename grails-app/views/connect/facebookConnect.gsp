@@ -8,7 +8,7 @@
     <h3>Connect to Facebook</h3>
 
     <form action="/connect/facebook" method="POST">
-        <input type="hidden" name="scope" value="read_stream" />
+        <input type="hidden" name="scope" value="email, public_profile, user_about_me, user_location, user_hometown, user_birthday, offline_access" />
         <div class="formInfo">
             <p>You aren't connected to Facebook yet. Click the button to connect this application with your Facebook account.</p>
         </div>

@@ -8,7 +8,6 @@ import org.apache.http.Header
 import org.apache.http.HttpEntity
 import org.apache.http.client.methods.CloseableHttpResponse
 import org.apache.http.client.methods.HttpDelete
-import org.apache.http.client.methods.HttpEntityEnclosingRequestBase
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.client.methods.HttpRequestBase
 import org.apache.http.entity.StringEntity
@@ -30,8 +29,7 @@ import javax.annotation.PostConstruct
  */
 @Component("orsanIndexer")
 public class OrsanIndexer {
-    @Autowired
-    GrailsApplication grailsApplication
+    @Autowired GrailsApplication grailsApplication
     static Logger logger = LoggerFactory.getLogger(OrsanIndexer.class)
 
     CloseableHttpClient httpClient          = null
@@ -106,9 +104,9 @@ public class OrsanIndexer {
     //INDEXING NODE
     def indexAddress(Address address){
         executePost(addressIndexUrl,"""{
-                                          "value" : "${address.name}",
+                                          "value" : "${address.lat}_${address.lon}",
                                           "uri"   : "${nodeUrl}/${address.id}",
-                                          "key"   : "name"
+                                          "key"   : "addressLatLon"
                                         }""")
         /*executePost(spatialBaseUrl+"/addNodeToLayer","""{
                                           "layer" : "geom",
@@ -117,16 +115,16 @@ public class OrsanIndexer {
     }
     def indexPerson(Person person){
         executePost(personIndexUrl,"""{
-                                          "value" : "${person.firstName}_${person.lastName}_${person.age}_${person.email}_${person.ssn}",
+                                          "value" : "${person.userId}_${person.firstName}_${person.lastName}_${person.age}_${person.ssn}",
                                           "uri"   : "${nodeUrl}/${person.id},
-                                          "key    : "firstName_lastName_age_email_ssn}"
+                                          "key    : "userId_firstName_lastName_age_ssn"
                                         }""")
     }
     def indexIncident(Incident incident){
         executePost(incidentIndexUrl,"""{
                                           "value" : "${incident.name}",
                                           "uri"   : "${nodeUrl}/${incident.id},
-                                          "key    : "firstName_lastName_age_email_ssn}"
+                                          "key    : "incidentName"
                                         }""")
     }
 

@@ -5,6 +5,9 @@ grails:
     profile: web
     codegen:
         defaultPackage: orsan
+    gsp:
+        tldScanPattern: 'classpath*:/META-INF/*.tld,/WEB-INF/tld/*.tld'
+
 info:
     app:
         name: '@info.app.name@'
@@ -106,11 +109,18 @@ environments:
                     enhanceImageTag: true
                     staticImageSupport: false
         facebook:
-            clientId: 281707958585235
-            clientSecret: 321c9a03128b568bda9f6f4abc79fe94
+                    clientId: 281707958585235
+                    clientSecret: 321c9a03128b568bda9f6f4abc79fe94
+                    scope: "email, public_profile, user_about_me, user_location, user_hometown, user_birthday"
         twitter:
             consumerKey: 0
             consumerSecret: 0
+        google:
+            consumerKey: "629252203032-m8q026fm2ld1a7moov05rk48oi81hj6d.apps.googleusercontent.com"
+            consumerSecret: "OfP7XfChMna_VZ7uoZesyn0-"
+            scope: "profile,email"
+            key: "AIzaSyBCfGYBAXwol-DgOzwzqOpo6rhhtuFUPRQ"
+
     test:
         neo4j:
             url: "http://localhost:7474"
@@ -131,9 +141,15 @@ environments:
         facebook:
             clientId: 281707958585235
             clientSecret: 321c9a03128b568bda9f6f4abc79fe94
+            scope: "email, public_profile, user_about_me, user_location, user_hometown, user_birthday, offline_access"
         twitter:
             consumerKey: 0
             consumerSecret: 0
+        google:
+            consumerKey: "629252203032-m8q026fm2ld1a7moov05rk48oi81hj6d.apps.googleusercontent.com"
+            consumerSecret: "OfP7XfChMna_VZ7uoZesyn0-"
+            scope: "profile,email"
+
     production:
         dataSource:
             dbCreate: update
