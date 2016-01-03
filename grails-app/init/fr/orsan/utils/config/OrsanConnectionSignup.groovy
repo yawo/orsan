@@ -1,6 +1,7 @@
 package fr.orsan.utils.config
 import fr.orsan.domain.Person
 import fr.orsan.services.AddressService
+import fr.orsan.utils.OrsanRole
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.neo4j.template.Neo4jOperations
 import org.springframework.social.connect.Connection
@@ -19,8 +20,13 @@ import org.springframework.stereotype.Component
 class OrsanConnectionSignup implements ConnectionSignUp{
     @Autowired Neo4jOperations neo4jTemplate
     @Autowired AddressService addressService
+
     @Override
-    String execute(Connection<?> connection) { neo4jTemplate.save(user2Person(connection.api)).userId }
+    String execute(Connection<?> connection) {
+        Person person = new Person()
+        person.setAuthorities(Arrays.asList(OrsanRole.ROLE_CUSTOMER))
+        neo4jTemplate.save(user2Person(person,connection.api)).userId
+    }
 
 /*    public  <T> String executeHelper(Connection<T> connection) {
         String providerId = connection.getKey().providerId;
@@ -35,28 +41,25 @@ class OrsanConnectionSignup implements ConnectionSignUp{
         person.id
     }
 */
-    protected Person user2Person(Facebook api) {
+    protected Person user2Person(Person person, Facebook api) {
         org.springframework.social.facebook.api.UserOperations operations = api.userOperations()
         User user = operations.userProfile
-        Person person = new Person()
         person.setUserId(user.email)
         person.setProfileImageUrl(user.cover.source)
         person.setBirthDate(Date.parse("MM/dd/yyyy", user.birthday))
         person.setFirstName(user.firstName)
         person.setLastName(user.lastName)
-        person.setBio("${user.bio}\n${user.about}")
+        person.setBio("${user.bio} \n ${user.about}")
         person.setHometown(user.hometown?.name)
         person.setGender(user.gender)
-        //Address
         person.setCommonAddresses(Arrays.asList(addressService.geocodeAndSave(user.getLocation()?.name)))
         person.setProviderId("facebook")
         return person
     }
 
-    protected Person user2Person(Twitter api) {
+    protected Person user2Person(Person person, Twitter api) {
         org.springframework.social.twitter.api.UserOperations operations = api.userOperations()
         TwitterProfile user = operations.userProfile;
-        Person person = new Person()
         person.setUserId(user.screenName)
         person.setProfileImageUrl(user.profileImageUrl)
         person.setBirthDate(null)
@@ -66,16 +69,14 @@ class OrsanConnectionSignup implements ConnectionSignUp{
         person.setBio(user.description)
         person.setHometown(null)
         person.setGender(null)
-        //Address
         person.setCommonAddresses(Arrays.asList(addressService.geocodeAndSave(user.location)))
         person.setProviderId("twitter")
         return person
     }
 
-    protected Person user2Person(Google api) {
+    protected Person user2Person(Person person, Google api) {
         PlusOperations operations = api.plusOperations()
         org.springframework.social.google.api.plus.Person user = operations.googleProfile
-        Person person = new Person()
         person.setUserId(user.accountEmail)
         person.setProfileImageUrl(user.imageUrl)
         person.setBirthDate(user.birthday)
@@ -84,7 +85,6 @@ class OrsanConnectionSignup implements ConnectionSignUp{
         person.setBio(user.aboutMe)
         person.setHometown(null)
         person.setGender(user.gender)
-        //Address
         person.setCommonAddresses(Arrays.asList(addressService.geocodeAndSave( (user.placesLived?.find {it.value}) )))//find the principal google address
         person.setProviderId("google")
         return person
